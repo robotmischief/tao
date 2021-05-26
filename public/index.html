@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="google-signin-client_id" content="702134014688-6pb3lgcptk5ffghaslj114n738srcgo8.apps.googleusercontent.com"><link rel="stylesheet" href="css/main.css" />
+    <script defer src="js/lottie.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js" defer></script>
+    <script defer src="js/main.js"></script>
+    <script defer src="js/dbapi.js"></script>
+    <title>TAO</title>
+  </head>
+  <body>
+
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '307296250840343',
+          xfbml      : true,
+          version    : 'v10.0'
+        });
+        FB.AppEvents.logPageView();
+      };
+    
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+
+    <div class="page-container">
+      <div id="loading"></div>
+      <div class="main-card">
+        <nav>
+          <ul class="nav-bar">
+            <li><a href="https://sad-esteban-echeverria7.webnode.com/">SAD Echeverría</a></li>
+            <li><a href="https://sad-esteban-echeverria7.webnode.com/contacto/">Contacto</a></li>
+            <li><a href="https://colesee.netlify.app/">Escuelas</a></li>
+            <li><a class="active">TAO</a></li>
+          </ul>
+        </nav>
+        <div class="back-overlay"></div>
+        <!-- TAO -->
+        <section class="tao">
+          <!-- LEFT CARD -->
+          <div class="left">
+            <!-- home -->
+            <div class="home">
+              <div class="small">sistema reserva</div>
+              <div class="big">TAO</div>
+              <div class="medium">turnos<br />atención<br />online</div>
+              <button class="appointment-btn">
+                <div id="appointment-anim-btn"></div>
+                <h2>reservar</h2>
+              </button>
+            </div>
+            <div class="login">
+              <div class="medium tittle">Su turno</div>
+              <ul>
+                <li id="one" class="active">
+                  <span>1</span><a>Ingrese sus datos</a>
+                </li>
+                <li id="two">
+                  <span >2</span><a>Seleccione Oficina</a>
+                </li>
+                <li id="three"><span>3</span><a>Seleccione Fecha</a></li>
+                <li id="four"><span>4</span><a>Seleccione Horario</a></li>
+              </ul>
+              <p class="confirmation-txt"></p>
+              <button id='confirm-btn' class="appointment-btn hide">Confirmar Turno</button>
+            </div>
+          </div>
+          <!-- RIGHT CARD -->
+          <div class="right">
+          <!-- confirmation -->
+          <div class="appointment-confirmation">
+            <h1 class="title">Confirmación de Turno</h1>
+            <h2 class="subtitle">Se asignadó correctamente<BR/>el siguiente turno:</h2>
+            <div class="appointment-detail-container">
+              <h3 class="category">Docente: <span id='confirm-name'>Robot Mischief</span></h3>
+              <h3 class="category">Día: <span id='confirm-date'>2021-05-12</span></h3>
+              <h3 class="category">Hora: <span id='confirm-time'>08:00</span></h3>
+              <h3 class="category">Oficina: <span id='confirm-office'>1</span></h3>
+            </div>
+            <!-- <button id='restart-btn' class="appointment-btn">Solicitar otro Turno</button> -->
+          </div>
+            <!-- time -->
+            <div class="time"></div>
+            <!-- date -->
+            <div class="date">
+              <input
+                class="medium"
+                type="date"
+                name="date-appointment"
+                id="date-appointment"
+              />
+              <h2>Seleccione fecha</h2>
+              <div class="error">Seleccione una fecha posterior a hoy</div>
+          </div>
+            <!-- office -->
+            <div class="office">
+              <div class="office-dropdown">
+                <button class="office-dropdown-btn">
+                  Seleccione una Oficina de esta lista
+                </button>
+                <ul class="office-dropdown-content">
+                  <li
+                    data-id="0"
+                    data-content="Archivo (Notas, Memos, Otros) | Recepción de documentación | Asesoramiento | Casillero de las escuelas | Comunicados a servicios educativos | Registro entradas y salidas grales."
+                  >
+                    Mesa de Entradas
+                  </li>
+                  <li
+                    data-id="1"
+                    data-content="Altas y cese | Carga informática de cambio de funciones y ART | Expedientes (formato papel) | Carga de novedades SUNA | CONTRALOR | Tramites de Servicios Provisorios, Reincorporaciones, Permutas, Traslados Interjurisdiccionales, Expedientes, etc. | Reclamos de sueldos"
+                  >
+                    Oficina 1
+                  </li>
+                  <li
+                    data-id="2"
+                    data-content="Inscripciones | Resoluciones de Titularización | Impresión de obleas | Ingreso a la docencia | Registro inscripciones de Emergencia"
+                  >
+                    Oficina 2
+                  </li>
+                  <li
+                    data-id="3"
+                    data-content="Actas poder | Actos públicos (provisionales, suplentes, fines) | Designaciones Decreto 258 | Resolución de titularizaciones"
+                  >
+                    Oficina 3
+                  </li>
+                  <li
+                    data-id="4"
+                    data-content="Concursos Docentes | Pruebas de selección | Inscripción de formación profesional | Renuncias titulares"
+                  >
+                    Oficina 4
+                  </li>
+                  <li
+                    data-id="5"
+                    data-content="A.R.T. | C.A.D. | Cambio de funciones | Designaciones ISFDYT 35 - FE - ESEA - IT.F | Destinos Definitivos | Licencia 114 12,1 (cuidado familiar) | PAD | PDD | Renuncias de titulares interinos | Titularizaciones interinas"
+                  >
+                    Oficina 5
+                  </li>
+                  <li
+                    data-id="6"
+                    data-content="Cédulas de notificación | Disposiciones (Asignación, Limitación, Reconocimiento) | Expedientes (Formato GDEBA) | Licencias 114 M1, VG (Violencia de Género) | MAD-Acrecentamiento | POF-POFA | Recursos - Reclamos | Registro de mail | Renuncias titulares (GDEBA) | Resoluciones Cargos Jerárquicos | Resoluciones de MAD y Acrecentamiento | Reubicaciones Transitorias y Definitivas | Vacantes"
+                  >
+                    Despacho
+                  </li>
+                </ul>
+              </div>
+              <div class="office-description"><p></p></div>
+            </div>
+            <!-- login -->
+            <div class="login">
+              <div class="form-login-container">
+                <form id='login-form' action="#">
+                  <div class="form-login-control">
+                    <input id='form-name' type="text" placeholder="Su nombre completo" />
+                    <i class='icon_ok'></i>
+                    <i class='icon_ko'></i>
+                    <div class="error">Ingrese su nombre completo</div>
+                  </div>
+                  <div class="form-login-control">
+                    <input id='form-email' type="email" placeholder="Su correo electrónico" />
+                    <i class='icon_ok'></i>
+                    <i class='icon_ko'></i>
+                    <div class="error">Ingrese un correo válido</div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="login-container">
+                <h2 class="small">o utilice</h2>
+                <!-- google button -->
+                <div id="gSignIn"></div>
+                <p>google con su correo del ABC</p>
+                <div class="fb-login-button" 
+                  data-width="200" 
+                  data-size="medium" 
+                  data-button-type="continue_with" 
+                  data-layout="default" 
+                  data-auto-logout-link="false" 
+                  data-use-continue-as="false"
+                  onlogin="checkLoginState();">
+                </div>
+              </div>
+              <div class="logout-container hide">
+                <button>Cerrar Sesión</button>
+              </div>
+            </div>
+            <!-- home -->
+            <div class="home">
+              <div id="anim-home"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

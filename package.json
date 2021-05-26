@@ -1,0 +1,20 @@
+{
+  "engines": {
+    "node": "14.17.0"
+  },
+  "name": "taoee",
+  "version": "1.0.0",
+  "description": "Sistema de Turnos Atención Online",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "robotmischief",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nedb": "^1.8.0",
+    "underscore": "^1.13.1"
+  }
+}
