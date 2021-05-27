@@ -89,6 +89,7 @@ nav .nav-bar {
   margin-left: 26px;
   padding: 12px 22px;
   cursor: pointer;
+  text-decoration: none;
 }
 .nav-bar li:first-child {
   float: left;
