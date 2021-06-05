@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;400;600&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
-/* 100 400 600 */
 
 :root {
   --bg-page: #41e4cd;
@@ -19,10 +18,15 @@
   box-sizing: border-box;
 }
 
+a {
+  color: var(--accent-salmon);
+}
+
 body {
   height: 100vh;
   font-family: "Roboto Slab", serif;
 }
+
 
 /* layout */
 .page-container {
@@ -65,6 +69,8 @@ body {
 .right {
   transform: translateY(-2350px);
 }
+
+
 /* nav bar */
 nav .nav-bar {
   position: absolute;
@@ -72,16 +78,19 @@ nav .nav-bar {
   padding: 25px;
   z-index: 999;
 }
+
 .nav-bar {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
+
 .nav-bar li {
   text-decoration: none;
   float: right;
   color: var(--accent-gray);
 }
+
 .nav-bar li a {
   border-radius: 25px;
   display: block;
@@ -91,20 +100,24 @@ nav .nav-bar {
   cursor: pointer;
   text-decoration: none;
 }
+
 .nav-bar li:first-child {
   float: left;
   margin-left: -35px;
   color: white;
 }
+
 .nav-bar li a:hover {
   color: white;
   background-color: var(--bg-card);
 }
+
 .nav-bar li a.active {
   cursor: default;
   color: white;
   background-color: var(--bg-card);
 }
+
 .back-overlay {
   height: 80px;
   width: 100%;
@@ -115,12 +128,10 @@ nav .nav-bar {
 }
 
 
-
 /* content */
 /* HOME */
 .left .home,
 .right .home {
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -128,10 +139,6 @@ nav .nav-bar {
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-
-.appointment-confirmation {
-  /* border: 1px solid red; */
 }
 
 .appointment-btn {
@@ -142,6 +149,7 @@ nav .nav-bar {
   background-color: Transparent;
   align-items: center;
 }
+
 .appointment-btn h2 {
   transform: translate(-15px, 10px);
   font-family: "Roboto Slab", serif;
@@ -215,6 +223,7 @@ nav .nav-bar {
   transform: translateX(295px);
   padding: 12px 20px;
 }
+
 .left .login ul li.active > a {
   transition: all 1s;
   text-align: right;
@@ -248,9 +257,11 @@ nav .nav-bar {
   align-items: center;
   margin-top: -30px;
 }
+
 .login-container h2 {
   margin: 10px 0;
 }
+
 .login-container p {
   font-family: 'Roboto', sans-serif;
   font-size: 12px;
@@ -260,6 +271,7 @@ nav .nav-bar {
 .logout-container {
   width: 100%;
 }
+
 .logout-container button {
   padding: 10px 15px;
   border-radius: 20px;
@@ -271,13 +283,14 @@ nav .nav-bar {
   font-size: 14px;
   cursor: pointer;
 }
+
 .logout-container button:hover {
   background-color: var(--secondary-salmon);
 }
+
 .login-social {
   margin-top: -80px;
 }
-
 
 .login-social h2 {
   margin-top: 55px;
@@ -290,11 +303,10 @@ nav .nav-bar {
  margin-bottom: 15px; 
 }
 
-
-
 .form-login-container {
   margin-top: 120px;
 }
+
 .form-login-container input {
   font-family: 'Roboto Slab', serif;
   font-size: 16px;
@@ -306,21 +318,27 @@ nav .nav-bar {
   border: 0;
   border: 2px solid var(--secondary-violet);
 }
+
 .form-login-container input:focus {
   outline: none;
   border: 2px solid var(--accent-violet);
 }
+
 .form-login-control {
   padding-bottom: 20px;
   position: relative;
 }
-
 
 .error {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   color: var(--accent-salmon);
   visibility: hidden;
+  width: 80%;
+}
+
+.date .error {
+  padding-top: 30px;
 }
 
 i {position: absolute;
@@ -334,15 +352,13 @@ i {position: absolute;
   background-position-y: 50%;
   background-position-x: 50%;
 }
+
 .icon_ok {
   background-image: url(../images/icon_ok.svg);
-  /* background-repeat: no-repeat;
-  background-size: 28px;
-  background-position-y: 50%;
-  background-position-x: 50%; */
   background-color: var(--bg-page);
   visibility: hidden;
 }
+
 i.icon_ko {
   visibility: hidden;
   background-size: 6px;
@@ -353,20 +369,24 @@ i.icon_ko {
 .form-login-control.ok i.icon_ok {
   visibility: visible;
 }
+
 .form-login-control.ko i.icon_ko {
   visibility: visible;
 }
+
 .form-login-control.ko .error {
   visibility: visible;
 }
+
+
 /* OFFICE */
 .office-dropdown {
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   margin-top: 125px;
   z-index: 1;
 }
+
 .office-dropdown-btn {
   background-color: transparent;
   border: 1px solid var(--secondary-violet);
@@ -378,6 +398,7 @@ i.icon_ko {
   cursor: pointer;
   font-family: 'Roboto Slab', serif;
 }
+
 .office-dropdown-content {
   visibility: hidden;
   display: block;
@@ -389,13 +410,16 @@ i.icon_ko {
   border-radius: 0 0 25px 25px;
   overflow: hidden;
 }
+
 .office-dropdown-content li {
   padding: 6px 30px;
 }
+
 .office-dropdown-content li:hover {
   background-color: var(--secondary-violet);
   color: white;
 }
+
 .office-description {
   width: 70%;
   height: 100%;
@@ -403,6 +427,7 @@ i.icon_ko {
   display: flex;
   align-items: flex-end;
 }
+
 .office-description p {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
@@ -410,11 +435,13 @@ i.icon_ko {
   margin-bottom: 15px;
 }
 
+
 /* DATE */
 .date {
   padding-top: 20px;
   position: relative;
 }
+
 .date h2 {
   position: absolute;
   font-size: 16px;
@@ -434,13 +461,16 @@ i.icon_ko {
   background-repeat: no-repeat;
   color: var(--secondary-violet);
 }
+
 [type="date"] {
   position: absolute;
   background-color: transparent;
 }
+
 [type="date"]::-webkit-inner-spin-button {
   display: none;
 }
+
 [type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0;
   position: absolute;
@@ -448,9 +478,11 @@ i.icon_ko {
   height: 40px;
   cursor: pointer;
 }
+
 [type="date"]:focus {
   outline: none;
 }
+
 #date-appointment {
   border: 2px solid var(--secondary-violet);
   border-radius: 25px;
@@ -464,9 +496,11 @@ i.icon_ko {
 .date .error {
   margin-top: 80px;
 }
+
 .date.ok #date-appointment {
   border: 2px solid var(--accent-green);
 }
+
 .date.ko #date-appointment {
   border: 2px solid var(--accent-salmon);
 }
@@ -475,9 +509,9 @@ i.icon_ko {
   visibility: visible;
 }
 
+
 /* TIME */
 .right .time {
-  /* border: 1px solid dodgerblue; */
   overflow-x: auto;
   overflow-y: hidden;
   width: 83%;
@@ -489,27 +523,30 @@ i.icon_ko {
   align-self: center;
   margin: 45px auto;
 }
+
 .time-col {
-  /* border: 1px solid red; */
   margin-bottom: 25px ;
   margin-right: 5px;
 }
+
 .time-row {
-  /* border: 1px solid green; */
   height: 50px;
   background-color: var(--bg-page);
   margin: 5px 0;
   transition: all .5s;
 }
+
 .time-header,
 .time-footer  {
   background-color: var(--secondary-salmon);
   padding: 5px 10px;
   color: white;
 }
+
 .time-header {
   border-radius: 7px 7px 0 0;
 }
+
 .time-footer {
   background-color: var(--secondary-salmon);
   border-radius: 0px 0px 7px 7px;
@@ -519,14 +556,13 @@ i.icon_ko {
 .time-row.busy {
   background-color: var(--bg-card);
 }
+
 .time-row.free {
   background-color: var(--bg-page);
 }
+
 .time-row.selected {
   border-radius: 50%;
-  /* width:50px;
-  align-self: center;
-  justify-self: center; */
   margin: 15px 5px;
 }
 
@@ -565,6 +601,7 @@ i.icon_ko {
   font-size: 16px;
   font-weight: 400;
 }
+
 .big {
   color: var(--accent-salmon);
   font-size: 64px;
@@ -572,12 +609,14 @@ i.icon_ko {
   line-height: 58px;
   margin-top: -5px;
 }
+
 .medium {
   color: var(--accent-violet);
   font-size: 26px;
   font-weight: 400;
   line-height: 24px;
 }
+
 
 /* lottie animations */
 #loading {
@@ -587,29 +626,36 @@ i.icon_ko {
   top: 50vh;
   transform: translateY(-50%);
 }
+
 #anim-home {
   width: 400px;
   transform: scaleX(-1);
   margin-top: 45px;
 }
+
 #appointment-anim-btn {
   width: 70px;
   margin-bottom: -15px;
 }
 
+
+/* appointment confirmation */
 .appointment-confirmation {
   font-family: 'Roboto Slab', serif;
   color: var(--secondary-violet);
 }
+
 .title {
   font-size: 26px;
   font-weight: 600;
 }
+
 .subtitle {
   font-size: 18px;
   font-weight: 600;
   color: var(--accent-green);
 }
+
 .appointment-detail-container {
   border: 2px solid var(--accent-gray);
   text-align: left;
@@ -618,10 +664,12 @@ i.icon_ko {
   margin-top: 12px;
   border-radius: 20px 20px 0 20px;
 }
+
 .category {
   font-size: 16px;
   font-weight: 600;
 }
+
 .category span {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;

@@ -1,3 +1,5 @@
+debugging = true;
+// DOM elements
 const pageContainerDOM = document.querySelector('.page-container');
 const mainCardDOM = document.querySelector('.main-card');
 const loadDOM = document.getElementById('loading');
@@ -17,11 +19,29 @@ const confirmAppointmentBtnDOM = document.getElementById('confirm-btn');
 confirmAppointmentBtnDOM.addEventListener('click', takeAppointment);
 //time
 const timeTableDOM = document.querySelector('.right .time');
-// timeTableDOM.addEventListener('click', hadleTimeSelection);
+//login form
+const formNameDOM = document.getElementById('form-name');
+const formEmailDOM= document.getElementById('form-email');
+formNameDOM.addEventListener('keyup', checkPersonalData);
+formEmailDOM.addEventListener('keyup', checkPersonalData);
+//main UX steps
+const taoLoginBTN = document.getElementById('one');
+const taoOfficeBTN = document.getElementById('two');
+const taoDateBTN = document.getElementById('three');
+const taoTimeBTN = document.getElementById('four');
+//event listeners for main 4 steps buttons
+taoLoginBTN.addEventListener('click', () => handleMenu('one'));
+taoOfficeBTN.addEventListener('click', () => handleMenu('two'));
+taoDateBTN.addEventListener('click', () => handleMenu('three'));
+taoTimeBTN.addEventListener('click', () => handleMenu('four'));
+//event  listener for social login/logout
+document.querySelector(".logout-container button").addEventListener('click', signOut);
 
+// track vars
 let loggedWith;
 let flagSavingtoDB;
-// track vars
+const amountSteps = 4; //steps user has to do to select an appointment
+//data object with user input/selection
 const appointmentData = {
   name: null,
   email: null,
@@ -35,16 +55,11 @@ const appointmentData = {
     time: false
   }
 };
+// appointment configuration
 const startAppointmentTime = 8;
 const endAppointmentTime = 17;
 const appointmentPerHour = 3;
 
-const formNameDOM = document.getElementById('form-name');
-const formEmailDOM= document.getElementById('form-email');
-formNameDOM.addEventListener('keyup', checkPersonalData);
-formEmailDOM.addEventListener('keyup', checkPersonalData);
-
-//  document.getElementById('restart-btn').addEventListener('click', ()=>  document.location.href = 'localhost:3000');
 
 function checkPersonalData() {
   const nameValue = formNameDOM.value;
@@ -54,21 +69,17 @@ function checkPersonalData() {
   (isEmail(emailValue)) ? setSuccessFor(formEmailDOM) : setErrorFor(formEmailDOM);
 
   if ((formNameDOM.parentElement.classList.contains('ok')) && (formEmailDOM.parentElement.classList.contains('ok'))) {
+    //user input ok
     step1DOM.classList.add('done');
-    
-    // readyCheck.personalData = true; //switch
 
     appointmentData.name = nameValue;
     appointmentData.email = emailValue;
     appointmentData.validate.userdata = true;
 
     buildConfirmationTxt();
-    
   }else{
-    //something is missing user data nor completed
+    //something is missing, user data nor completed
     step1DOM.classList.remove('done');
-
-    // readyCheck.personalData = false; //switch
 
     appointmentData.name = null;
     appointmentData.email = null;
@@ -78,8 +89,9 @@ function checkPersonalData() {
   }
 }
 
+
 function buildConfirmationTxt(){
-  //starting from an empty message
+  //start with an empty message. rebuild everytime 
   let stepsDone = 0;
   let message = 'Solicitando turno ';
   confirmationTxtDOM.innerHTML = message;
@@ -94,7 +106,6 @@ function buildConfirmationTxt(){
   }
   if (appointmentData.validate.date) {
     stepsDone ++;
-    // const date = new Date(datePickerDOM.value+'T00:00:00');
     const date = new Date(appointmentData.date);
     message += `para el ${whichDay(date.getDay())} ${date.getDate()} de ${whichMonth(date.getMonth())} de ${date.getFullYear()} `;
   }
@@ -105,9 +116,13 @@ function buildConfirmationTxt(){
   
   confirmationTxtDOM.innerHTML = message;
 
-  (stepsDone === 4) ? confirmAppointmentBtnDOM.classList.remove('hide') : confirmAppointmentBtnDOM.classList.add('hide');
+  (stepsDone === amountSteps) ? confirmAppointmentBtnDOM.classList.remove('hide') : confirmAppointmentBtnDOM.classList.add('hide');
 }
 
+/**
+ * callbacks for form input fields validation (success or error)
+ * @param {type=input} domElement 
+ */
 function setErrorFor(domElement) {
   const formControl = domElement.parentElement;
   formControl.className = 'form-login-control ko';
@@ -117,43 +132,44 @@ function setSuccessFor(domElement) {
   formControl.className = 'form-login-control ok';
 }
 
+/**
+ * Quick email validation (regular expression)
+ * @param {string} email 
+ */
 function isEmail(email) {
 	return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 }
 
 datePickerDOM.addEventListener('change', (e)=> {
-  console.log('DATE PICKED', datePickerDOM.value);
   if (!datePickerDOM.value) return;
   document.querySelector('.date h2').innerHTML = datePickerDOM.value;
   checkDate(datePickerDOM.value);
 });
 
 
-//////////////////////////
-//DATE
+/**
+ * Validate selected date
+ * @param {string} value 
+ */
 function checkDate(value) {
   const today = new Date();
   const selectedDate = new Date(value + 'T00:00:00'); //added time to fix time zone diffs with ISO
-  const diffDays = Math.ceil((selectedDate - today) / (1000 * 60 * 60 * 24));
-  //you can take an appointment for today, nearest appointment day is tomorrow
-  if (diffDays > 0 ) {
+  const diffDays = Math.ceil((selectedDate - today) / (1000 * 60 * 60 * 24)); //converting to days
+  const selDayNum = selectedDate.getDay(); //checking for saturday and sunday
+  //nearest appointment day you can pick is tomorrow but not weekends
+  if ((diffDays > 0) && ( (selDayNum !==0) && (selDayNum !==6) ) ) {
     datePickerDOM.parentElement.className = "date ok";
+    //date ok
     step3DOM.classList.add('done');
-
-    // readyCheck.appointmentdate = true; //switch
 
     appointmentData.date = selectedDate;
     appointmentData.validate.date = true;
 
-    date = selectedDate; //switch
     buildConfirmationTxt();
-
   } else {
     datePickerDOM.parentElement.className = "date ko";
 
     step3DOM.classList.remove('done');
-
-    // readyCheck.appointmentdate = false;//switch
 
     appointmentData.date = null;
     appointmentData.validate.date = false;
@@ -162,32 +178,30 @@ function checkDate(value) {
   }
 }
 
-// event listener for picking office
+// adding event listeners to dropdown elements (for picking an office)
 for (const item of officesDOM) {
   item.addEventListener('click', handleOfficeLi);
 }
-//////////////////////////////
-// OFFICE
+
+/**
+ * Handles click on dropdown list element
+ * @param {click event} e 
+ */
 function handleOfficeLi(e) {
   document.querySelector('.office-dropdown-content').style.visibility = 'hidden';
   officeDropdownDOM.innerHTML = e.target.innerHTML;
-  document.querySelector('.office-description p').innerHTML = e.target.dataset.content;
+  document.querySelector('.office-description p').innerHTML = e.target.dataset.content; //displays office work description (from html dataset)
 
   step2DOM.className = 'done';
 
-  // readyCheck.office = true; //switch
-
   appointmentData.validate.office = true;
   appointmentData.office = e.target.dataset.id;
-
-  office = e.target.dataset.id; //switch
 
   buildConfirmationTxt();
 }
 
 
-///////////////////////////////
-// lottie animations
+///lottie animations//////////////////////////////////////////////////////////////
 const lottieCovito = lottie.loadAnimation({
     container: loadDOM, 
     renderer: 'svg',
@@ -228,40 +242,33 @@ appointBtnAnim.addEventListener('complete', ()=> {
 appointBtnAnimDOM.parentElement.addEventListener('click', ()=> {
   appointBtnAnim.play();
 })
+///end lottie animations//////////////////////////////////////////////////////////
 
-//event listener para office dropdown
+
 officeDropdownDOM.addEventListener('click', handleOfficeDropDown);
 
 function handleOfficeDropDown() {
   document.querySelector('.office-dropdown-content').style.visibility = 'visible';
 }
 
+///initializing//////////////////////////////////////////////////////////////
 function initLoader() {
-    lottieCovito.play();
-    renderButton();
+    lottieCovito.play(); //startup animation
+    renderButton(); //google login
 }
 
 function initCard(){
-    loadDOM.classList.add('hide');
+    loadDOM.classList.add('hide'); //hide startup anim
     pageContainerDOM.style.backgroundColor = 'var(--bg-page)';
-    mainCardDOM.style.transform = 'translateY(0px)';
+    mainCardDOM.style.transform = 'translateY(0px)'; //brings main UI
 }
 
-const taoLoginBTN = document.getElementById('one');
-const taoOfficeBTN = document.getElementById('two');
-const taoDateBTN = document.getElementById('three');
-const taoTimeBTN = document.getElementById('four');
-//event listeners for main 4 steps buttons
-taoLoginBTN.addEventListener('click', () => handleMenu('one'));
-taoOfficeBTN.addEventListener('click', () => handleMenu('two'));
-taoDateBTN.addEventListener('click', () => handleMenu('three'));
-taoTimeBTN.addEventListener('click', () => handleMenu('four'));
-//event  listener for social login/logout
-document.querySelector(".logout-container button").addEventListener('click', signOut);
 
 
-///////////////////////
-// Main Steps 4 Menues
+/**
+ * Handles Main UX options for choosing an appointment 
+ * @param {string} option 
+ */
 function handleMenu(option) {
   if (flagSavingtoDB) return; //saving appointment to the db
 
@@ -291,7 +298,7 @@ function handleMenu(option) {
         break;
         
         case 'four':
-          //prerequisit office and date selected
+          //prerequisite office and date already selected
           if ( !appointmentData.validate.office || !appointmentData.validate.date) return;
 
           taoLoginBTN.classList.remove('active');
@@ -312,11 +319,11 @@ function handleMenu(option) {
         taoDateBTN.classList.remove('active');
         taoTimeBTN.classList.remove('active');
         break;
-      
   }
 }
 
-// UTILS //
+
+///utils//////////////////////////////////////////////////////////////
 function whichDay(date) {
   const days = [
     'Domingo', 
@@ -328,7 +335,6 @@ function whichDay(date) {
   ];  
   return days[date];
 }
-
 
 function whichMonth(date) {
   const month = [
@@ -352,8 +358,8 @@ function whichMonth(date) {
 window.addEventListener('load', initLoader());
 
 
-// GOOGLE login
-// Render Google Sign-in button
+///google login//////////////////////////////////////////////////////////////
+// render google sign-in button
 function renderButton() {
   gapi.signin2.render('gSignIn', {
       'scope': 'profile email',
@@ -365,9 +371,9 @@ function renderButton() {
       'onfailure': onFailureGoogle
   });
 }
-// Sign-in success callback
+//sign-in success callback
 function onSuccessgGoogle(googleUser) {
-  // Retrieve the Google account data
+  // retrieve google account data
   gapi.client.load('oauth2', 'v2', function () {
       var request = gapi.client.oauth2.userinfo.get({
           'userId': 'me'
@@ -382,12 +388,13 @@ function onSuccessgGoogle(googleUser) {
       });
   });
 }
-// Sign-in failure callback
+// sign-in failure callback
 function onFailureGoogle(error) {
+  //TODO UX visuals
   console.log('error login in with google', error);
 }
 
-// Sign out the user
+// sign out the user
 function signOut() {
   if (loggedWith === 'google') {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -395,7 +402,7 @@ function signOut() {
     });
     auth2.disconnect();
   } else {
-    //facebook
+    //loged with facebook
     FB.logout(function(response) {
       console.log('LOGOUT FACEBOOK');
     });
@@ -407,8 +414,8 @@ function signOut() {
   checkPersonalData();
 }
 
-//////////
-//sigin facebook
+
+///facebook login//////////////////////////////////////////////////////////////
 function checkLoginState() {
   FB.login(function(response) {
     if (response.authResponse) {
@@ -420,44 +427,47 @@ function checkLoginState() {
       checkPersonalData();
      });
     } else {
+      //TODO UX visuals
       console.log('error login in with facebook', response.error);
     }
 }, {scope: 'public_profile,email'});
 }
 
 
-
-//DATABASE STUFF
+///database//////////////////////////////////////////////////////////////
 async function dbFetchAppointments() {
   const data = {
     "office": appointmentData.office,
     "date": appointmentData.date
   };
-const options = {
+  const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-};
+  };
 
-const response = await fetch('/api/appointments', options);
-const json = await response.json();
-console.log('respuesta db', json);
-buildTimePicker(json.data)
+  const response = await fetch('/api/appointments', options);
+  const json = await response.json();
+  buildTimePicker(json.data);
 }
-// Builds time table to pick appointment spot
+
+/**
+ * Builds UX time table to pick an appointment spot from the db response
+ * @param {json} data 
+ */
 function buildTimePicker(data) {
   const divTimeContainer = document.querySelector('.time');
   divTimeContainer.innerHTML = ''; //starting fresh, cleaning in case of previous selection
   if (data === null) {
-    //nothing on that date
-    console.log('no hay nada rebuilding the schedulle');
+    //nothing on that date: build and empty free grid of appointments
+    if (debugging) console.log('nada >> rebuilding the schedule');
     for ( i = startAppointmentTime; i <= endAppointmentTime; i++) {
       const divTimeCol = document.createElement('div');
       divTimeCol.classList.add('time-col');
 
-      console.log( i + ':00');
+      if (debugging) console.log( i + ':00');
 
       const divTimeHeader = document.createElement('div');
       divTimeHeader.classList.add('time-header');
@@ -465,7 +475,7 @@ function buildTimePicker(data) {
       divTimeCol.appendChild(divTimeHeader);
 
       for ( j = 1; j <= appointmentPerHour; j++ ) { 
-        console.log(j);
+        if (debugging) console.log(j);
         const divTimeRow = document.createElement('div');
         divTimeRow.classList.add('time-row', 'free');
         divTimeRow.setAttribute('id', i);
@@ -473,16 +483,15 @@ function buildTimePicker(data) {
         divTimeCol.appendChild(divTimeRow);
        }
 
-       console.log('-----------');
+       if (debugging) console.log('-----------');
        const divTimeFooter = document.createElement('div');
        divTimeFooter.classList.add('time-footer');
        divTimeCol.appendChild(divTimeFooter);
        divTimeContainer.appendChild(divTimeCol);
       }
   } else {
-    //something on that date
-    console.log('hay algo the schedulle');
-    // const divTimeContainer = document.querySelector('.time');
+    //something on that date. check busy appointments
+    if (debugging) console.log('building a busy schedulle');
 
     for ( i = startAppointmentTime; i <= endAppointmentTime; i++) {
       const divTimeCol = document.createElement('div');
@@ -519,7 +528,12 @@ function buildTimePicker(data) {
       }
   }
 
-
+/**
+ * 
+ * @param {Array} dateAppointments All apointments for an specific day
+ * @param {number} hourToCheck Which hour of the working day is being checked 
+ * @returns {number} Amount of taken spots on a specific hour
+ */
   function countAppointmentTaked(dateAppointments, hourToCheck) {
     return dateAppointments.reduce((accu, elem) => {
       return ( hourToCheck === elem.hour ? accu + 1 : accu)
@@ -527,10 +541,12 @@ function buildTimePicker(data) {
   }
 
 
-  /////////////////////////////////////7
-  //TIME OF APPOINTMENT
+/**
+ * Handles when the user clicks on a free/busy spot of the day schedule to get an appointment
+ * @param {object} e Click Event
+ */
   function pickAppointmentHour(e) {
-    const timePicked = e.path[0].id;
+    const timePicked = e.path[0].id; //DOM Element that was clicked 
 
     //already selected?
     if (e.path[0].classList.contains('selected')){
@@ -550,7 +566,7 @@ function buildTimePicker(data) {
     }
     e.path[0].classList.add('selected');
     appointmentData.time = e.path[0].id;
-    console.log(e.path[0]);
+    if (debugging) console.log(e.path[0]);
     appointmentData.validate.time = true;
     step4DOM.classList.add('done');
     
@@ -559,10 +575,13 @@ function buildTimePicker(data) {
 
 }
 
+/**
+ * Contact db to record appointment taken
+ */
 async function takeAppointment() {
-    confirmAppointmentBtnDOM.classList.add('hide');
-    flagSavingtoDB = true;
-    document.querySelector('.tao .right').style.transform = 'translateY(0px)';
+  confirmAppointmentBtnDOM.classList.add('hide');
+  flagSavingtoDB = true;
+  document.querySelector('.tao .right').style.transform = 'translateY(0px)';
 
   const options = {
       method: 'POST',
@@ -583,6 +602,12 @@ async function takeAppointment() {
     document.getElementById('confirm-time').textContent = json.data.hour;
     document.getElementById('confirm-office').textContent = json.data.office;
   }else{
-    //TODO: handle UI for error writting to db
+    //TODO: handle UI visuals for error writting to db
+    if (debugging) console.log('error regitering appointment');
+    document.querySelector('.appointment-confirmation .title').textContent = 'Sin Turno';
+    document.querySelector('.appointment-detail-container').classList.add('hide');
+    const subtitle = document.querySelector('.appointment-confirmation .subtitle');
+    subtitle.style.color = 'var(--secondary-salmon)';
+    subtitle.innerHTML = 'No fue posible registrar su turno.<BR/>Hubo un error al conectar con<BR/>la base de datos.<BR/>Por favor intente nuevamente<BR/>más tarde.';
   }
 }

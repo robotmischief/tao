@@ -13,21 +13,6 @@ app.use(express.json({limit:'1mb'}));
 const database = new Datastore('data/appointments.db');
 database.loadDatabase();
 
-// const cosas = {
-//     office: 1,
-//     date: new Date('2021-05-25T03:00:00.000Z'),
-//     hour:15,
-//     name: 'Domingo Sarmiento',
-//     email: 'faustino@abc.gob.ar',
-//     active: true
-// };
-
-// database.insert( cosas, function (err, newDoc) {   // Callback is optional
-//     // newDoc is the newly inserted document, including its _id
-//     // newDoc has no key called notToBeSaved since its value was undefined
-//   });
-
-
 app.post('/api/appointments', (request, response) => {
     //post to retrieve appointments
    const data = request.body;
@@ -64,9 +49,16 @@ app.post('/api/takeappointment', (request, response) => {
     };
     database.insert(doc, function (err, newDoc) {
         console.log("inserting on data base");
+        if(err) {
+            response.json({
+                status:'ok',
+                data: newDoc
+            });
+        }else{
         response.json({
-            status:'ok',
-            data: newDoc
+            status:'ko',
+            data: null
         });
-      });
-})
+      }
+    })
+});
