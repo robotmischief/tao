@@ -49,7 +49,8 @@ app.post('/api/takeappointment', (request, response) => {
     };
     database.insert(doc, function (err, newDoc) {
         console.log("inserting on data base");
-        if(err) {
+        console.log(err);
+        if(err === null) {
             response.json({
                 status:'ok',
                 data: newDoc
