@@ -1,0 +1,8 @@
+{
+    "name": "Turnos Atencion Online",
+    "short_name": "TAO",
+    "lang": "en",
+    "start_url": "/",
+    "display": "browser",
+    "orientation": "landscape"
+  }

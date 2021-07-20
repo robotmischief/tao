@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
 
 :root {
-  /* --bg-page: #41e4cd; */
-  --bg-page: #67c6bd;
+  --bg-page: #41e4cd;
+  /* --bg-page: #67c6bd; */
   --bg-card: #d8dee8;
   --accent-gray: #d8dee8;
   --accent-violet: #9c7bf2;
