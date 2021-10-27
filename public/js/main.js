@@ -1,4 +1,8 @@
+// helper - flag vars
 debugging = true;
+let loggedWith;
+let flagSavingtoDB;
+const amountSteps = 4; //steps the user has to do to select an appointment
 // DOM elements
 const pageContainerDOM = document.querySelector('.page-container');
 const mainCardDOM = document.querySelector('.main-card');
@@ -17,31 +21,39 @@ const step4DOM = document.getElementById('four').querySelector('span');
 const confirmationTxtDOM = document.querySelector('.confirmation-txt');
 const confirmAppointmentBtnDOM = document.getElementById('confirm-btn');
 confirmAppointmentBtnDOM.addEventListener('click', takeAppointment);
-//time
+// time
 const timeTableDOM = document.querySelector('.right .time');
-//login form
+// login form
 const formNameDOM = document.getElementById('form-name');
 const formEmailDOM= document.getElementById('form-email');
 formNameDOM.addEventListener('keyup', checkPersonalData);
 formEmailDOM.addEventListener('keyup', checkPersonalData);
-//main UX steps
+// main UX steps
 const taoLoginBTN = document.getElementById('one');
 const taoOfficeBTN = document.getElementById('two');
 const taoDateBTN = document.getElementById('three');
 const taoTimeBTN = document.getElementById('four');
-//event listeners for main 4 steps buttons
+
+// event listeners for the main 4 step buttons
 taoLoginBTN.addEventListener('click', () => handleMenu('one'));
 taoOfficeBTN.addEventListener('click', () => handleMenu('two'));
 taoDateBTN.addEventListener('click', () => handleMenu('three'));
 taoTimeBTN.addEventListener('click', () => handleMenu('four'));
-//event  listener for social login/logout
+// event  listener for social login/logout
 document.querySelector(".logout-container button").addEventListener('click', signOut);
+// event listener for the date picker
+datePickerDOM.addEventListener('change', (e)=> {
+  if (!datePickerDOM.value) return;
+  document.querySelector('.date h2').innerHTML = datePickerDOM.value;
+  checkDate(datePickerDOM.value);
+});
+// event listeners for dropdown elements (pick an office for the appointment)
+officeDropdownDOM.addEventListener('click', handleOfficeDropDown);
+for (const item of officesDOM) {
+  item.addEventListener('click', handleOfficeLi);
+}
 
-// track vars
-let loggedWith;
-let flagSavingtoDB;
-const amountSteps = 4; //steps user has to do to select an appointment
-//data object with user input/selection
+// data object with the user input/selection
 const appointmentData = {
   name: null,
   email: null,
@@ -55,12 +67,15 @@ const appointmentData = {
     time: false
   }
 };
-// appointment configuration
+
+// appointment configuration (agenda-schedule limits)
 const startAppointmentTime = 8;
 const endAppointmentTime = 17;
 const appointmentPerHour = 3;
 
-
+/**
+ * @description checks if name and email are complete and marks as done first step
+ */
 function checkPersonalData() {
   const nameValue = formNameDOM.value;
   const emailValue = formEmailDOM.value;
@@ -78,7 +93,7 @@ function checkPersonalData() {
 
     buildConfirmationTxt();
   }else{
-    //something is missing, user data nor completed
+    //something is missing, user data not completed
     step1DOM.classList.remove('done');
 
     appointmentData.name = null;
@@ -89,9 +104,11 @@ function checkPersonalData() {
   }
 }
 
-
+/**
+ * @description creates a brief message with all the appointment data (who, when, where)
+ */
 function buildConfirmationTxt(){
-  //start with an empty message. rebuild everytime 
+  // start with an empty message to rebuild everytime something change
   let stepsDone = 0;
   let message = 'Solicitando turno ';
   confirmationTxtDOM.innerHTML = message;
@@ -120,35 +137,32 @@ function buildConfirmationTxt(){
 }
 
 /**
- * callbacks for form input fields validation (success or error)
+ * @description callbacks for the form input fields validation (success)
  * @param {type=input} domElement 
  */
 function setErrorFor(domElement) {
   const formControl = domElement.parentElement;
   formControl.className = 'form-login-control ko';
 }
+/**
+ * @description callbacks for the form input fields validation (error)
+ * @param {type=input} domElement 
+ */
 function setSuccessFor(domElement) {
   const formControl = domElement.parentElement;
   formControl.className = 'form-login-control ok';
 }
 
 /**
- * Quick email validation (regular expression)
+ * @description quick email validation (with a regular expression)
  * @param {string} email 
  */
 function isEmail(email) {
 	return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 }
 
-datePickerDOM.addEventListener('change', (e)=> {
-  if (!datePickerDOM.value) return;
-  document.querySelector('.date h2').innerHTML = datePickerDOM.value;
-  checkDate(datePickerDOM.value);
-});
-
-
 /**
- * Validate selected date
+ * @description validate selected date
  * @param {string} value 
  */
 function checkDate(value) {
@@ -157,7 +171,7 @@ function checkDate(value) {
   const diffDays = Math.ceil((selectedDate - today) / (1000 * 60 * 60 * 24)); //converting to days
   const selDayNum = selectedDate.getDay(); //checking for saturday and sunday
   //nearest appointment day you can pick is tomorrow but not weekends
-  if ((diffDays > 0) && ( (selDayNum !==0) && (selDayNum !==6) ) ) {
+  if ((diffDays > 0) && ( (selDayNum !== 0) && (selDayNum !== 6) ) ) {
     datePickerDOM.parentElement.className = "date ok";
     //date ok
     step3DOM.classList.add('done');
@@ -178,19 +192,14 @@ function checkDate(value) {
   }
 }
 
-// adding event listeners to dropdown elements (for picking an office)
-for (const item of officesDOM) {
-  item.addEventListener('click', handleOfficeLi);
-}
-
 /**
- * Handles click on dropdown list element
+ * @description handles click on dropdown list element
  * @param {click event} e 
  */
 function handleOfficeLi(e) {
   document.querySelector('.office-dropdown-content').style.visibility = 'hidden';
   officeDropdownDOM.innerHTML = e.target.innerHTML;
-  document.querySelector('.office-description p').innerHTML = e.target.dataset.content; //displays office work description (from html dataset)
+  document.querySelector('.office-description p').innerHTML = e.target.dataset.content; //displays office description (from html dataset)
 
   step2DOM.className = 'done';
 
@@ -201,7 +210,7 @@ function handleOfficeLi(e) {
 }
 
 
-///lottie animations//////////////////////////////////////////////////////////////
+/// lottie animations //////////////////
 const lottieCovito = lottie.loadAnimation({
     container: loadDOM, 
     renderer: 'svg',
@@ -242,31 +251,37 @@ appointBtnAnim.addEventListener('complete', ()=> {
 appointBtnAnimDOM.parentElement.addEventListener('click', ()=> {
   appointBtnAnim.play();
 })
-///end lottie animations//////////////////////////////////////////////////////////
-
-
-officeDropdownDOM.addEventListener('click', handleOfficeDropDown);
-
-function handleOfficeDropDown() {
-  document.querySelector('.office-dropdown-content').style.visibility = 'visible';
-}
-
-///initializing//////////////////////////////////////////////////////////////
-function initLoader() {
-    lottieCovito.play(); //startup animation
-    renderButton(); //google login
-}
-
-function initCard(){
-    loadDOM.classList.add('hide'); //hide startup anim
-    pageContainerDOM.style.backgroundColor = 'var(--bg-page)';
-    mainCardDOM.style.transform = 'translateY(0px)'; //brings main UI
-}
+/// end lottie animations //////////////////
 
 
 
 /**
- * Handles Main UX options for choosing an appointment 
+ * @description shows office dropdown
+ */
+function handleOfficeDropDown() {
+  document.querySelector('.office-dropdown-content').style.visibility = 'visible';
+}
+
+/// initializing app //////////////////
+/**
+ * @description starts loader animation
+ */
+function initLoader() {
+    lottieCovito.play();
+    renderButton(); //google login
+}
+/**
+ * @description displays the main UI
+ */
+function initCard(){
+    loadDOM.classList.add('hide'); //hides loader startup anim
+    pageContainerDOM.style.backgroundColor = 'var(--bg-page)';
+    mainCardDOM.style.transform = 'translateY(0px)';
+}
+
+
+/**
+ * @description handles Main UX options for choosing an appointment 
  * @param {string} option 
  */
 function handleMenu(option) {
@@ -298,7 +313,7 @@ function handleMenu(option) {
         break;
         
         case 'four':
-          //prerequisite office and date already selected
+          // as prerequisite, office and date needs to be already selected
           if ( !appointmentData.validate.office || !appointmentData.validate.date) return;
 
           taoLoginBTN.classList.remove('active');
@@ -323,20 +338,31 @@ function handleMenu(option) {
 }
 
 
-///utils//////////////////////////////////////////////////////////////
-function whichDay(date) {
+/// utils //////////////////
+/**
+ * @description translates the day of the week from date index number to human-named-string
+ * @param {number} indx (0 - 6)
+ * @returns {string} day of the week
+ */
+function whichDay(indx) {
   const days = [
     'Domingo', 
-    'Lunes', 'Martes', 
+    'Lunes',
+    'Martes', 
     'Miércoles', 
     'Jueves', 
     'Viernes', 
     'Sábado'
   ];  
-  return days[date];
+  return days[indx];
 }
 
-function whichMonth(date) {
+/**
+ * @description translates the month from date index number to human-named-string
+ * @param {number} indx (0 - 6)
+ * @returns {string} month name
+ */
+function whichMonth(indx) {
   const month = [
     'Enero',
     'Febrero',
@@ -352,13 +378,13 @@ function whichMonth(date) {
     'Diciembre'
   ];
 
-  return month[date];
+  return month[indx];
 }
 
 window.addEventListener('load', initLoader());
 
 
-///google login//////////////////////////////////////////////////////////////
+/// google login //////////////////
 // render google sign-in button
 function renderButton() {
   gapi.signin2.render('gSignIn', {
@@ -371,7 +397,7 @@ function renderButton() {
       'onfailure': onFailureGoogle
   });
 }
-//sign-in success callback
+// sign-in success callback
 function onSuccessgGoogle(googleUser) {
   // retrieve google account data
   gapi.client.load('oauth2', 'v2', function () {
@@ -390,7 +416,7 @@ function onSuccessgGoogle(googleUser) {
 }
 // sign-in failure callback
 function onFailureGoogle(error) {
-  //TODO UX visuals
+  // TODO UX visuals
   console.log('error login in with google', error);
 }
 
@@ -402,7 +428,7 @@ function signOut() {
     });
     auth2.disconnect();
   } else {
-    //loged with facebook
+    // loged with facebook
     FB.logout(function(response) {
       console.log('LOGOUT FACEBOOK');
     });
@@ -415,7 +441,7 @@ function signOut() {
 }
 
 
-///facebook login//////////////////////////////////////////////////////////////
+/// facebook login //////////////////
 function checkLoginState() {
   FB.login(function(response) {
     if (response.authResponse) {
@@ -434,7 +460,10 @@ function checkLoginState() {
 }
 
 
-///database//////////////////////////////////////////////////////////////
+/// database //////////////////
+/**
+ * @description fetchs data for a specific office and specific date
+ */
 async function dbFetchAppointments() {
   const data = {
     "office": appointmentData.office,
@@ -454,8 +483,8 @@ async function dbFetchAppointments() {
 }
 
 /**
- * Builds UX time table to pick an appointment spot from the db response
- * @param {json} data 
+ * @description builds UX time table to pick an appointment free spot from the db response
+ * @param {object json} data 
  */
 function buildTimePicker(data) {
   const divTimeContainer = document.querySelector('.time');
@@ -529,8 +558,8 @@ function buildTimePicker(data) {
   }
 
 /**
- * 
- * @param {Array} dateAppointments All apointments for an specific day
+ * @description checks on how many apointments are taken on an hour
+ * @param {Array} dateAppointments All the apointments for an specific day
  * @param {number} hourToCheck Which hour of the working day is being checked 
  * @returns {number} Amount of taken spots on a specific hour
  */
@@ -542,7 +571,7 @@ function buildTimePicker(data) {
 
 
 /**
- * Handles when the user clicks on a free/busy spot of the day schedule to get an appointment
+ * @description handles when the user clicks on a free/busy spot of the day schedule to get an appointment
  * @param {object} e Click Event
  */
   function pickAppointmentHour(e) {
@@ -576,7 +605,7 @@ function buildTimePicker(data) {
 }
 
 /**
- * Contact db to record appointment taken
+ * @description Contact db to record the appointment taken
  */
 async function takeAppointment() {
   confirmAppointmentBtnDOM.classList.add('hide');

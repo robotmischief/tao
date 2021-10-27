@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;400;600&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
 
+/* color palette */
 :root {
   --bg-page: #41e4cd;
-  /* --bg-page: #67c6bd; */
   --bg-card: #d8dee8;
   --accent-gray: #d8dee8;
   --accent-violet: #9c7bf2;
@@ -13,6 +13,7 @@
   --secondary-salmon: #f47a71;
 }
 
+/* resets */
 * {
   margin: 0;
   padding: 0;
@@ -301,7 +302,7 @@ nav .nav-bar {
 .login-social p {
   font-size: 12px;
   margin-top: 5px;
- margin-bottom: 15px; 
+  margin-bottom: 15px; 
 }
 
 .form-login-container {
