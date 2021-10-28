@@ -1,4 +1,5 @@
 ![app header](readme_img/header.gif)
+
 A real-time web-based application to conveniently book appointments through any connected device.
 
 Implemented with Node, Express and a document oriented Database.
